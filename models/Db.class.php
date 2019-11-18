@@ -7,9 +7,16 @@ class Db
     private function __construct()
     {
         try {
-            $this->_db = new PDO('mysql:host=ec2-54-217-234-157.eu-west-1.compute.amazonaws.com;dbname=dbs3jn5qaiu9m3;charset=utf8', 'jsbsnftqbmtmyy', '1219db1c02f229f2d8812ad4c551f9ae70108eddb1fdf325aa461dfc58cb183f');
-            $this->_db->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
-			$this->_db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE,PDO::FETCH_OBJ);
+           	$db = parse_url(getenv("DATABASE_URL"));
+
+		$this->_db = new PDO("pgsql:" . sprintf(
+		    "host=%s;port=%s;user=%s;password=%s;dbname=%s",
+		    $db["host"],
+		    $db["port"],
+		    $db["user"],
+		    $db["pass"],
+		    ltrim($db["path"], "/")
+		));
         } 
 		catch (PDOException $e) {
 		    die('Erreur de connexion à la base de données : '.$e->getMessage());
